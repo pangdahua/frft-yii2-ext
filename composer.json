@@ -1,0 +1,19 @@
+{
+    "name": "frft/yiiext",
+    "version": "1.0.0",
+    "autoload": {
+        "psr-4": {
+            "Frft\\Yiiext\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "pangdahua",
+            "email": "5687046@qq.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.0.0",
+        "psr/simple-cache": "^1.0|^2.0|^3.0"
+    }
+}
