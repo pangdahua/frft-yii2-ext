@@ -1,6 +1,6 @@
 <?php
 
-namespace FRFT\Yiiext\redism;
+namespace Frft\Yiiext\redism;
 
 use Yii;
 use yii\helpers\StringHelper;

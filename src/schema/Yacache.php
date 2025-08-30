@@ -1,6 +1,6 @@
 <?php
 
-namespace FRFT\Yiiext\schema;
+namespace Frft\Yiiext\schema;
 
 /**
  * YAC 缓存 实现 schema 的进程缓存。 需要搭配主动清理脚本
