@@ -1,18 +1,19 @@
 {
-    "name": "frft/yiiext",
-    "autoload": {
-        "psr-4": {
-            "Frft\\Yiiext\\": "src/"
-        }
-    },
-    "authors": [
-        {
-            "name": "pangdahua",
-            "email": "5687046@qq.com"
-        }
-    ],
-    "require": {
-        "php": ">=8.0.0",
-        "psr/simple-cache": "^1.0|^2.0|^3.0"
+  "name": "frft/yiiext",
+  "autoload": {
+    "psr-4": {
+      "Frft\\Yiiext\\": "src/"
     }
+  },
+  "authors": [
+    {
+      "name": "pangdahua",
+      "email": "5687046@qq.com"
+    }
+  ],
+  "require": {
+    "php": ">=8.0.0",
+    "psr/simple-cache": "^1.0|^2.0|^3.0",
+    "ext-redis": "*"
+  }
 }
