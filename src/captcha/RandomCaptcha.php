@@ -64,20 +64,20 @@ class RandomCaptcha extends \yii\base\Component
         return $data['code'];
     }
 
-    public function check(string $code, bool $deleteCode = false): bool
+    public function check(string $phone, string $code, bool $deleteCode = false): bool
     {
         try {
             /**
              * @var \Redis
              */
             $redis = Yii::$app->get($this->redis);
-            $key = $this->getKey($code);
+            $key = $this->getKey($phone);
             $data = $redis->hGetAll($key);
             if (!$data) {
                 return false;
             } else {
                 $validCount = $redis->hincrby($key, 'validCount', 1);
-                if ($validCount >= $this->maxValidateCount) {
+                if ($validCount > $this->maxValidateCount) {
                     $deleteCode = true;
                     return false;
                 }
