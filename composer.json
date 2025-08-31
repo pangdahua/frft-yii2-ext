@@ -1,6 +1,5 @@
 {
   "name": "frft/yiiext",
-  "version": "dev-main",
   "autoload": {
     "psr-4": {
       "Frft\\Yiiext\\": "src/"
