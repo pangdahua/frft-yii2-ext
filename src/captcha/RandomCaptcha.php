@@ -82,6 +82,11 @@ class RandomCaptcha extends \yii\base\Component
                     return false;
                 }
 
+                if ($data['time'] + $this->expire < time()) { // 时间过期
+                    $deleteCode = true;
+                    return false;
+                }
+
                 return $data['code'] == $code;
             }
 
