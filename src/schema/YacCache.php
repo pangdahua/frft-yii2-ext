@@ -23,8 +23,11 @@ class YacCache extends \yii\caching\Cache implements \yii\caching\CacheInterface
     public function init()
     {
         parent::init();
+        if (!extension_loaded('yac')) {
+            throw new \RuntimeException('YAC extension is required.');
+        }
         if (null === $this->yacInstance) {
-            $this->yacInstance = new Yac($this->prefix);
+            $this->yacInstance = new \Yac($this->prefix);
         }
     }
 

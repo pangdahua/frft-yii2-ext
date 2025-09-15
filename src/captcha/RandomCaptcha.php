@@ -54,7 +54,7 @@ class RandomCaptcha extends \yii\base\Component
             }
         }
         $data = [
-            'code' => (string)mt_rand(100000, 999999),
+            'code' => $this->genCode(),
             'validCount' => 0,
             'time' => time(),
         ];
@@ -62,6 +62,15 @@ class RandomCaptcha extends \yii\base\Component
         $redis->expire($key, $this->expire);
 
         return $data['code'];
+    }
+
+    private function genCode():string
+    {
+        $code = '';
+        for ($i = 0; $i < $this->length; $i++) {
+            $code .= mt_rand(0, 9);
+        }
+        return $code;
     }
 
     public function check(string $phone, string $code, bool $deleteCode = false): bool
