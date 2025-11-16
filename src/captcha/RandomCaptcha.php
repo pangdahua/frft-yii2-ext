@@ -40,6 +40,34 @@ class RandomCaptcha extends \yii\base\Component
      */
     public string $keyPrefix = 'random_captcha_';
 
+    const ERR_NONE = 0;
+
+    /**
+     * 验证码间隔时间内不能重复获取
+     */
+    const ERR_INTERVAL = 1;
+
+    const ERR_EXPIRE = 2;
+
+    const ERR_MAX_VALIDATE_COUNT = 3;
+
+    /**
+     * @var int
+     */
+    private $_errCode;
+
+    public function getErrorCode()
+    {
+        return $this->_errCode;
+    }
+
+    /**
+     * 如果在固定周期内已经获取过验证码，则返回 false
+     *
+     * @param string $phone
+     * @return string|false
+     * @throws \yii\base\InvalidConfigException
+     */
     public function make(string $phone): string|false
     {
         /**
@@ -50,6 +78,7 @@ class RandomCaptcha extends \yii\base\Component
         $data = $redis->hGetAll($key);
         if ($data) {
             if (time() < $data['time'] + $this->interval) { // 间隔时间内不能重复获取
+                $this->_errCode = self::ERR_INTERVAL;
                 return false;
             }
         }
@@ -64,7 +93,7 @@ class RandomCaptcha extends \yii\base\Component
         return $data['code'];
     }
 
-    private function genCode():string
+    private function genCode(): string
     {
         $code = '';
         for ($i = 0; $i < $this->length; $i++) {
@@ -83,16 +112,19 @@ class RandomCaptcha extends \yii\base\Component
             $key = $this->getKey($phone);
             $data = $redis->hGetAll($key);
             if (!$data) {
+                $this->_errCode = self::ERR_EXPIRE;
                 return false;
             } else {
                 $validCount = $redis->hincrby($key, 'validCount', 1);
                 if ($validCount > $this->maxValidateCount) {
                     $deleteCode = true;
+                    $this->_errCode = self::ERR_MAX_VALIDATE_COUNT;
                     return false;
                 }
 
                 if ($data['time'] + $this->expire < time()) { // 时间过期
                     $deleteCode = true;
+                    $this->_errCode = self::ERR_EXPIRE;
                     return false;
                 }
 
@@ -101,9 +133,19 @@ class RandomCaptcha extends \yii\base\Component
 
         } finally {
             if ($deleteCode) {
-                $redis->del($key);
+                $this->clean($phone);
             }
         }
+    }
+
+    public function clean(string $phone)
+    {
+        /**
+         * @var \Redis
+         */
+        $redis = Yii::$app->get($this->redis);
+        $key = $this->getKey($phone);
+        $redis->del($key);
     }
 
     private function getKey(string $phone): string
